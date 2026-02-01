@@ -2,31 +2,29 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
+import roomsRoutes from "./routes/rooms.js";
+import guestsRoutes from "./routes/guests.js";
 
 dotenv.config();
 
 
 
 const app = express();
+
+// middleware
 app.use(cors());
 app.use(express.json());
 
-let guests = [];
-let id = 1;
 
-// GET guests
-app.get("/api/guests", (req, res) => {
-  res.json(guests);
-});
+// ROUTES
+app.use("/api/rooms", roomsRoutes);
+app.use("/api/guests", guestsRoutes);
 
-// ADD guest
-app.post("/api/guests", (req, res) => {
-  const guest = { id: id++, ...req.body };
-  guests.push(guest);
-  res.status(201).json(guest);
-});
 
-app.listen(5000, () => {
-  console.log("Server running on port 5000");
+
+
+const PORT = 5000;
+app.listen(PORT, () => {
+  console.log(`Server running on http://localhost:${PORT}`);
 });
 
