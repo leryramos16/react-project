@@ -20,7 +20,9 @@ function Guests() {
 
     // fetch guests in backend
     useEffect(() => {
-      fetchGuests();
+      fetch("https://localhost/api/guests")
+        .then((res) => res.json())
+        .then((data) => setGuests(data));
     }, []);
 
     const fetchGuests = async () => {

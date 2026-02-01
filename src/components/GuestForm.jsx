@@ -19,8 +19,11 @@ function GuestForm({ open, onClose, onSave }) {
   const [fullname, setFullname] = useState("");
   const [rooms, setRooms] = useState([]);          // selected rooms
   const [roomOptions, setRoomOptions] = useState([]); // from backend
+  const [checkIn, setCheckIn] = useState("");
+  const [checkOut, setCheckOut] = useState("");
+  const [note, setNote] = useState("");
 
-  // 🔹 fetch rooms from backend
+  //  fetch rooms from backend
   useEffect(() => {
     fetch("http://localhost:5000/api/rooms")
       .then((res) => res.json())
@@ -28,9 +31,21 @@ function GuestForm({ open, onClose, onSave }) {
   }, []);
 
   const handleSubmit = async () => {
+    if (!fullname || rooms.length === 0 || !checkIn || !checkOut) {
+        alert("Please complete all required fields");
+        return;
+    }
+
+    if (new Date(checkOut) <= new Date(checkIn)) {
+    alert("Check-out must be after check-in");
+    return;
+  }
+
     const guestData = {
       fullname,
       rooms,
+      check_in: checkIn,
+      check_out: checkOut,
     };
 
     // 🔹 send to backend
@@ -81,14 +96,46 @@ function GuestForm({ open, onClose, onSave }) {
                   {room.name}
                 </MenuItem>
               ))}
-            </Select>
+            </Select>             
           </FormControl>
+
+          {/* Check-in date */}
+            <TextField
+            label="Check-in Date"
+            type="date"
+            value={checkIn}
+            onChange={(e) => setCheckIn(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            inputProps={{ min: new Date().toISOString().split("T")[0] }}
+            fullWidth
+            />
+
+            {/* Check-out date */}
+            <TextField
+            label="Check-out Date"
+            type="date"
+            value={checkOut}
+            onChange={(e) => setCheckOut(e.target.value)}
+            InputLabelProps={{ shrink: true }}
+            fullWidth
+            />
+
+            {/* Notes */}
+            <TextField
+            label="Notes"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            multiline
+            rows={3}
+            fullWidth
+            />
         </Stack>
       </DialogContent>
 
       <DialogActions>
         <Button onClick={onClose}>Cancel</Button>
-        <Button variant="contained" onClick={handleSubmit}>
+        <Button variant="contained" onClick={handleSubmit}
+                disabled={!fullname || rooms.length === 0}>
           Save
         </Button>
       </DialogActions>
