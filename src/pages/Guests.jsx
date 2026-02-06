@@ -8,33 +8,47 @@ import {
   Card,
   CardContent,
   Stack,
+  Chip,
+  Divider
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import GuestForm from "../components/GuestForm";
-import axios from "axios";
+
+
 
 
 function Guests() {
     const [guests, setGuests] = useState([]);
     const [open, setOpen] = useState(false);
+    const formatDate = (date) => {
+        return new Date(date).toLocaleDateString("en-US", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+        });
+        };
+
 
     // fetch guests in backend
     useEffect(() => {
-      fetch("https://localhost/api/guests")
-        .then((res) => res.json())
-        .then((data) => setGuests(data));
+        const fetchGuests = async () => {
+            try {
+                const res = await fetch("http://localhost:5000/api/guests");
+                const data = await res.json();
+                setGuests(data);
+            } catch (err) {
+                console.error("Failed to fetch guests", err);
+            }
+        };
+
+        fetchGuests();
     }, []);
 
-    const fetchGuests = async () => {
-        const res = await axios.get("http://localhost:5000/api/guests");
-        setGuests(res.data);
-    };
-
-    const addGuest = async (guest) => {
-        await axios.post("http://localhost:5000/api/guests", guest);
-        fetchGuests();
-        setOpen(false);
-    };
+   const handleSave = async () => {
+    const res = await fetch("http://localhost:5000/api/guests");
+    const data = await res.json();
+    setGuests(data);
+   };
 
     return (
         <>
@@ -56,20 +70,44 @@ function Guests() {
                     </Button>
                 </Stack>
 
-                <Card>
-                    <CardContent>
-                        {guests.length === 0 && <Typography>No guests yet</Typography>}
-
-                        {guests.map((g) => (
-                            <Typography key={g.id}>
-                                {g.name} - {g.room}
+                <Stack spacing={2}>
+                    {guests.map((guest) => (
+                        <Card key={guest.id} variant="outlined">
+                        <CardContent>
+                            {/* Guest Name */}
+                            <Typography variant="h6">
+                            {guest.fullname}
                             </Typography>
-                        ))}
-                    </CardContent>
-                </Card>
+
+                            {/* Dates */}
+                            <Typography color="text.secondary">
+                            {formatDate(guest.check_in)} → {formatDate(guest.check_out)}
+                            </Typography>
+
+                            {/* Rooms */}
+                            <Stack direction="row" spacing={1} mt={1} flexWrap="wrap">
+                            {guest.rooms.map((room, index) => (
+                                <Chip key={index} label={room} />
+                            ))}
+                            </Stack>
+
+                            {/* Notes */}
+                            {guest.note && (
+                            <>
+                                <Divider sx={{ my: 1 }} />
+                                <Typography variant="body2">
+                                Note: {guest.note}
+                                </Typography>
+                            </>
+                            )}
+                        </CardContent>
+                        </Card>
+                    ))}
+                    </Stack>
+
            </Container>
 
-           <GuestForm open={open} onClose={() => setOpen(false)} onSave={addGuest}/>
+           <GuestForm open={open} onClose={() => setOpen(false)} onSave={handleSave}/>
         </>
     );
     

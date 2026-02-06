@@ -46,18 +46,22 @@ function GuestForm({ open, onClose, onSave }) {
       rooms,
       check_in: checkIn,
       check_out: checkOut,
+      note,
     };
 
-    // 🔹 send to backend
+    //  send to backend
     await fetch("http://localhost:5000/api/guests", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(guestData),
     });
 
-    onSave(guestData); // optional (for local state)
+    onSave(); // optional (for local state)
     setFullname("");
     setRooms([]);
+    setCheckIn("");
+    setCheckOut("");
+    setNote("");
     onClose();
   };
 
@@ -85,14 +89,15 @@ function GuestForm({ open, onClose, onSave }) {
               input={<OutlinedInput label="Rooms" />}
               renderValue={(selected) => (
                 <Stack direction="row" spacing={1} flexWrap="wrap">
-                  {selected.map((room) => (
-                    <Chip key={room} label={room} />
-                  ))}
+                  {selected.map((roomId) => {
+                    const room = roomOptions.find((r) => r.id === roomId);
+                    return <Chip key={roomId} label={room?.name} />
+                })}
                 </Stack>
               )}
             >
               {roomOptions.map((room) => (
-                <MenuItem key={room.id} value={room.name}>
+                <MenuItem key={room.id} value={room.id}>
                   {room.name}
                 </MenuItem>
               ))}
