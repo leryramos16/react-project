@@ -25,10 +25,16 @@ function GuestForm({ open, onClose, onSave }) {
 
   //  fetch rooms from backend
   useEffect(() => {
-    fetch("http://localhost:5000/api/rooms")
-      .then((res) => res.json())
-      .then((data) => setRoomOptions(data));
-  }, []);
+  if (!open) return;
+
+  fetch("http://localhost:5000/api/rooms/available")
+    .then((res) => res.json())
+    .then((data) => setRoomOptions(data))
+    .catch(console.error);
+}, [open]);
+
+
+
 
   const handleSubmit = async () => {
     if (!fullname || rooms.length === 0 || !checkIn || !checkOut) {
@@ -97,8 +103,13 @@ function GuestForm({ open, onClose, onSave }) {
               )}
             >
               {roomOptions.map((room) => (
-                <MenuItem key={room.id} value={room.id}>
+                <MenuItem 
+                key={room.id}
+                value={room.id}
+                disabled={!room.available}
+                >
                   {room.name}
+                  {!room.available && " (Occupied)"}
                 </MenuItem>
               ))}
             </Select>             

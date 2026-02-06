@@ -10,6 +10,25 @@ router.post("/", async (req, res) => {
   const { fullname, rooms, check_in, check_out, note } = req.body;
 
   try {
+    //  CHECK CONFLICT 
+    const conflict = await pool.query(
+      `
+      SELECT 1
+      FROM guest_rooms gr
+      JOIN guests g ON g.id = gr.guest_id
+      WHERE gr.room_id = ANY($1::int[])
+        AND $2 < g.check_out
+        AND $3 > g.check_in
+      `,
+      [rooms, check_in, check_out]
+    );
+
+    if (conflict.rowCount > 0) {
+      return res.status(400).json({
+        error: "One or more selected rooms are already occupied",
+      });
+    }
+
     //  insert guest
     const guestResult = await pool.query(
       `INSERT INTO guests (fullname, check_in, check_out, note)
