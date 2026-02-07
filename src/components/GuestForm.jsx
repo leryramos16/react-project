@@ -14,6 +14,7 @@ import {
   OutlinedInput,
   Chip,
 } from "@mui/material";
+import api from "../api/api.js";
 
 function GuestForm({ open, onClose, onSave }) {
   const [fullname, setFullname] = useState("");
@@ -23,29 +24,35 @@ function GuestForm({ open, onClose, onSave }) {
   const [checkOut, setCheckOut] = useState("");
   const [note, setNote] = useState("");
 
-  //  fetch rooms from backend
+  //  fetch available rooms
   useEffect(() => {
-  if (!open) return;
+    if (!open) return;
 
-  fetch("http://localhost:5000/api/rooms/available")
-    .then((res) => res.json())
-    .then((data) => setRoomOptions(data))
-    .catch(console.error);
-}, [open]);
+    const fetchRooms = async () => {
+      try {
+        const res = await api.get("/rooms/available");
+        setRoomOptions(res.data);
+      } catch (err) {
+        console.error("Failed to fetch rooms", err.response?.data || err.message);
+      }
+    };
+
+    fetchRooms();
+  }, [open]);
 
 
 
 
   const handleSubmit = async () => {
     if (!fullname || rooms.length === 0 || !checkIn || !checkOut) {
-        alert("Please complete all required fields");
-        return;
+      alert("Please complete all required fields");
+      return;
     }
 
     if (new Date(checkOut) <= new Date(checkIn)) {
-    alert("Check-out must be after check-in");
-    return;
-  }
+      alert("Check-out must be after check-in");
+      return;
+    }
 
     const guestData = {
       fullname,
@@ -55,20 +62,20 @@ function GuestForm({ open, onClose, onSave }) {
       note,
     };
 
-    //  send to backend
-    await fetch("http://localhost:5000/api/guests", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(guestData),
-    });
+    try {
+      await api.post("/guests", guestData);
 
-    onSave(); // optional (for local state)
-    setFullname("");
-    setRooms([]);
-    setCheckIn("");
-    setCheckOut("");
-    setNote("");
-    onClose();
+      onSave(); // refresh guest list
+      setFullname("");
+      setRooms([]);
+      setCheckIn("");
+      setCheckOut("");
+      setNote("");
+      onClose();
+    } catch (err) {
+      console.error("Failed to save guest", err.response?.data || err.message);
+      alert("Failed to save guest");
+    }
   };
 
   return (

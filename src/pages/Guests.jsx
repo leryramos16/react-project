@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import AddIcon from "@mui/icons-material/Add";
 import GuestForm from "../components/GuestForm";
+import api from "../api/api.js";
 
 
 
@@ -29,26 +30,30 @@ function Guests() {
         };
 
 
-    // fetch guests in backend
-    useEffect(() => {
-        const fetchGuests = async () => {
-            try {
-                const res = await fetch("http://localhost:5000/api/guests");
-                const data = await res.json();
-                setGuests(data);
-            } catch (err) {
-                console.error("Failed to fetch guests", err);
-            }
-        };
+useEffect(() => {
+  const fetchGuests = async () => {
+    try {
+      const res = await api.get("/guests");
+      setGuests(res.data);
+    } catch (err) {
+      console.error("Failed to fetch guests", err.response?.data || err.message);
+    }
+  };
 
-        fetchGuests();
-    }, []);
+  fetchGuests();
+}, []);
 
-   const handleSave = async () => {
-    const res = await fetch("http://localhost:5000/api/guests");
-    const data = await res.json();
-    setGuests(data);
-   };
+
+  // refresh list after save
+  const handleSave = async () => {
+  try {
+    const res = await api.get("/guests");
+    setGuests(res.data);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 
     return (
         <>
