@@ -9,8 +9,15 @@ import {
   CardContent,
   Stack,
   Chip,
-  Divider
+  Divider,
+  Box,
+  BottomNavigation,
+  BottomNavigationAction,
+  Paper
 } from "@mui/material";
+
+import NavBar from "../components/NavBar.jsx";
+
 import AddIcon from "@mui/icons-material/Add";
 import GuestForm from "../components/GuestForm";
 import api from "../api/api.js";
@@ -57,11 +64,7 @@ useEffect(() => {
 
     return (
         <>
-           <AppBar position="static">
-                <Toolbar>
-                    <Typography variant="h6">Guest Dashboard</Typography>
-                </Toolbar>
-           </AppBar>
+           <NavBar/>
 
            <Container>
                 <Stack direction="row" justifyContent="space-between" mb={2}>
