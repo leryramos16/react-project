@@ -12,7 +12,7 @@ import {
   MenuItem,
   OutlinedInput,
   Chip,
-  FormHelperText,
+  Alert,
 } from "@mui/material";
 import { useGuestForm } from "../hooks/useGuestForm";
 
@@ -35,9 +35,9 @@ function GuestForm({ open, onClose, onSave }) {
 
       <DialogContent>
         {formError && (
-          <FormHelperText error sx={{ mb: 2 }}>
+          <Alert variant="filled" severity="error">
             {formError}
-          </FormHelperText>
+          </Alert>
         )}
 
         <Stack spacing={2} mt={1}>

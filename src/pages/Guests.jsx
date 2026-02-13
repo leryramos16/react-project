@@ -65,7 +65,6 @@ useEffect(() => {
     return (
         <>
            <NavBar/>
-
            <Container>
                 <Stack direction="row" justifyContent="space-between" mb={2}>
                     <Typography variant="h5">Guest List</Typography>
