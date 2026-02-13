@@ -12,6 +12,7 @@ import {
   MenuItem,
   OutlinedInput,
   Chip,
+  FormHelperText,
 } from "@mui/material";
 import { useGuestForm } from "../hooks/useGuestForm";
 
@@ -23,6 +24,7 @@ function GuestForm({ open, onClose, onSave }) {
     checkIn, setCheckIn,
     checkOut, setCheckOut,
     note, setNote,
+    formError, setFormError,
     handleSubmit,
     loading,
   } = useGuestForm(open, onSave, onClose);
@@ -32,11 +34,20 @@ function GuestForm({ open, onClose, onSave }) {
       <DialogTitle>Add Guest</DialogTitle>
 
       <DialogContent>
+        {formError && (
+          <FormHelperText error sx={{ mb: 2 }}>
+            {formError}
+          </FormHelperText>
+        )}
+
         <Stack spacing={2} mt={1}>
           <TextField
             label="Full Name"
             value={fullname}
-            onChange={(e) => setFullname(e.target.value)}
+            onChange={(e) => {
+              setFullname(e.target.value);
+              if (formError) setFormError("");
+            }}
             fullWidth
           />
 
@@ -45,7 +56,10 @@ function GuestForm({ open, onClose, onSave }) {
             <Select
               multiple
               value={rooms}
-              onChange={(e) => setRooms(e.target.value)}
+              onChange={(e) => {
+              setRooms(e.target.value);
+              if (formError) setFormError("");
+            }}
               input={<OutlinedInput label="Rooms" />}
               renderValue={(selected) => (
                 <Stack direction="row" spacing={1} flexWrap="wrap">
@@ -73,7 +87,10 @@ function GuestForm({ open, onClose, onSave }) {
             label="Check-in Date"
             type="date"
             value={checkIn}
-            onChange={(e) => setCheckIn(e.target.value)}
+            onChange={(e) => {
+              setCheckIn(e.target.value);
+              if (formError) setFormError("");
+            }}
             InputLabelProps={{ shrink: true }}
             fullWidth
           />
@@ -82,7 +99,10 @@ function GuestForm({ open, onClose, onSave }) {
             label="Check-out Date"
             type="date"
             value={checkOut}
-            onChange={(e) => setCheckOut(e.target.value)}
+            onChange={(e) => {
+              setCheckOut(e.target.value);
+              if (formError) setFormError("");
+            }}
             InputLabelProps={{ shrink: true }}
             fullWidth
           />
@@ -90,7 +110,10 @@ function GuestForm({ open, onClose, onSave }) {
           <TextField
             label="Notes"
             value={note}
-            onChange={(e) => setNote(e.target.value)}
+            onChange={(e) => {
+              setNote(e.target.value);
+              if (formError) setFormError("");
+            }}
             multiline
             rows={3}
             fullWidth

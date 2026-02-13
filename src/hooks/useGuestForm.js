@@ -10,6 +10,7 @@ export function useGuestForm(open, onSave, onClose) {
   const [checkIn, setCheckIn] = useState("");
   const [checkOut, setCheckOut] = useState("");
   const [note, setNote] = useState("");
+  const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
 
   // fetch rooms when dialog opens
@@ -49,9 +50,11 @@ export function useGuestForm(open, onSave, onClose) {
   };
 
   const handleSubmit = async () => {
+    setFormError(""); // reset error
+
     const error = validate();
     if (error) {
-      alert(error);
+      setFormError(error); // show error in MUI
       return;
     }
 
@@ -71,7 +74,13 @@ export function useGuestForm(open, onSave, onClose) {
       onClose();
     } catch (err) {
       console.error("Failed to save guest", err);
-      alert("Failed to save guest");
+
+      // If backend returns a message (e.g., room occupied)
+      if (err.response?.data?.message) {
+        setFormError(err.response.data.message);
+      } else {
+        setFormError("Failed to save guest");
+      }
     } finally {
       setLoading(false);
     }
@@ -86,5 +95,6 @@ export function useGuestForm(open, onSave, onClose) {
     note, setNote,
     handleSubmit,
     loading,
+    formError,
   };
 }
