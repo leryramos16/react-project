@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 
 import NavBar from "../components/NavBar.jsx";
-
+import SearchAppBar from "../components/SearchAppBar.jsx"
 import AddIcon from "@mui/icons-material/Add";
 import GuestForm from "../components/GuestForm";
 import api from "../api/api.js";
@@ -64,9 +64,11 @@ useEffect(() => {
 
     return (
         <>
+          <SearchAppBar/>
            <NavBar/>
            <Container>
                 <Stack direction="row" justifyContent="space-between" mb={2}>
+                    
                     <Typography variant="h5">Guest List</Typography>
                     <Button
                         variant="contained"
