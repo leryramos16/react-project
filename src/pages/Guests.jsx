@@ -64,11 +64,12 @@ useEffect(() => {
 
     return (
         <>
-          <SearchAppBar/>
+          <Box mb={1}>
+            <SearchAppBar/>
+          </Box>
            <NavBar/>
            <Container>
                 <Stack direction="row" justifyContent="space-between" mb={2}>
-                    
                     <Typography variant="h5">Guest List</Typography>
                     <Button
                         variant="contained"

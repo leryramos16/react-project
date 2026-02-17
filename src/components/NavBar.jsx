@@ -5,7 +5,7 @@ import {
   BottomNavigationAction,
   Paper
 } from "@mui/material";
-
+import { useNavigate, useLocation } from "react-router-dom";
 
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import PeopleIcon from "@mui/icons-material/People";
@@ -13,8 +13,24 @@ import HistoryIcon from "@mui/icons-material/History";
 
 
  function NavBar() {
-  const [value, setValue] = React.useState(0);
+  const navigate = useNavigate();
+  const location = useLocation();
 
+  const routes = ["/", "/meals", "/history"];
+
+  // Get current tab index based on URL
+  const getCurrentIndex = () => {
+    const currentPath = location.pathname;
+    const index = routes.indexOf(currentPath);
+    return index === -1 ? 0 : index;
+  };
+
+  const [value, setValue] = React.useState(getCurrentIndex());
+
+  // Update active tab when URL changes
+  React.useEffect(() => {
+    setValue(getCurrentIndex());
+  }, [location.pathname]);
   return (
     <Paper
       sx={{
@@ -30,6 +46,7 @@ import HistoryIcon from "@mui/icons-material/History";
         value={value}
         onChange={(event, newValue) => {
           setValue(newValue);
+          navigate(routes[newValue]);
         }}
       >
         <BottomNavigationAction
