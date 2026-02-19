@@ -73,7 +73,7 @@ router.get("/", async (req, res) => {
       ORDER BY g.created_at DESC
     `);
 
-    res.json(result.rows);
+    res.json(result.rows); // controller sends data back to frontend
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to fetch guests" });

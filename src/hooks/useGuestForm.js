@@ -19,7 +19,7 @@ export function useGuestForm(open, onSave, onClose) {
 
     const loadRooms = async () => {
       try {
-        const data = await fetchAvailableRooms();
+        const data = await fetchAvailableRooms(); // galing sa service/roomService
         setRoomOptions(data);
       } catch (err) {
         console.error("Failed to fetch rooms", err);

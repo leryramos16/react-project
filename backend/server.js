@@ -16,7 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 
-// ROUTES
+// ROUTE (CONTROLLER ENTRY POINT)
 app.use("/api/rooms", roomsRoutes);
 app.use("/api/guests", guestsRoutes);
 
