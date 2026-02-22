@@ -2,8 +2,8 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 
-import roomsRoutes from "./routes/rooms.js";
-import guestsRoutes from "./routes/guests.js";
+import roomRoutes from "./routes/roomRoutes.js";
+import guestsRoutes from "./routes/guestRoutes.js";
 
 dotenv.config();
 
@@ -17,14 +17,13 @@ app.use(express.json());
 
 
 // ROUTE (CONTROLLER ENTRY POINT)
-app.use("/api/rooms", roomsRoutes);
+app.use("/api/rooms", roomRoutes);
 app.use("/api/guests", guestsRoutes);
 
 
 
 
-const PORT = 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.listen(5000, () => {
+  console.log("Server running on port 5000");
 });
 

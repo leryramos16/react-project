@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
-import { fetchAvailableRooms } from "../services/roomService";
-import { createGuest } from "../services/guestService";
-
+import { useState, useEffect } from "react";
+import api from "../api/api.js";
 
 export function useGuestForm(open, onSave, onClose) {
   const [fullname, setFullname] = useState("");
@@ -13,55 +11,54 @@ export function useGuestForm(open, onSave, onClose) {
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // fetch rooms when dialog opens
-  useEffect(() => {
-    if (!open) return;
-
-    const loadRooms = async () => {
-      try {
-        const data = await fetchAvailableRooms(); // galing sa service/roomService
-        setRoomOptions(data);
-      } catch (err) {
-        console.error("Failed to fetch rooms", err);
-      }
-    };
-
-    loadRooms();
-  }, [open]);
-
-  const resetForm = () => {
-    setFullname("");
-    setRooms([]);
-    setCheckIn("");
-    setCheckOut("");
-    setNote("");
+  // Fetch available rooms from backend
+  const fetchAvailableRooms = async () => {
+    try {
+      const res = await api.get("/rooms/available");
+      setRoomOptions(res.data);
+    } catch (err) {
+      console.error("Failed to fetch rooms", err.response?.data || err.message);
+    }
   };
 
+  // Reset form when modal opens
+  useEffect(() => {
+    if (open) {
+      setFullname("");
+      setRooms([]);
+      setCheckIn("");
+      setCheckOut("");
+      setNote("");
+      setFormError("");
+      fetchAvailableRooms();
+    }
+  }, [open]);
+
+  
+
+  // Validate form
   const validate = () => {
-    if (!fullname || rooms.length === 0 || !checkIn || !checkOut) {
-      return "Please complete all required fields";
-    }
-
-    if (new Date(checkOut) <= new Date(checkIn)) {
+    if (!fullname) return "Full name is required";
+    if (rooms.length === 0) return "Select at least one room";
+    if (!checkIn) return "Check-in date is required";
+    if (!checkOut) return "Check-out date is required";
+    if (new Date(checkOut) <= new Date(checkIn))
       return "Check-out must be after check-in";
-    }
-
     return null;
   };
 
+  // Handle form submit
   const handleSubmit = async () => {
-    setFormError(""); // reset error
-
     const error = validate();
     if (error) {
-      setFormError(error); // show error in MUI
+      setFormError(error);
       return;
     }
 
     setLoading(true);
 
     try {
-      await createGuest({
+      await api.post("/guests", {
         fullname,
         rooms,
         check_in: checkIn,
@@ -69,20 +66,12 @@ export function useGuestForm(open, onSave, onClose) {
         note,
       });
 
-      onSave();
-      resetForm();
-      onClose();
-    } catch (err) {
-      console.error("Failed to save guest", err);
-
-      // If backend returns a message (e.g., room occupied)
-      if (err.response?.data?.message) {
-        setFormError(err.response.data.message);
-      } else {
-        setFormError("Failed to save guest");
-      }
-    } finally {
       setLoading(false);
+      onSave(); // refresh guest list
+      onClose(); // close modal
+    } catch (err) {
+      setLoading(false);
+      setFormError(err.response?.data?.error || "Failed to save guest");
     }
   };
 
@@ -93,8 +82,8 @@ export function useGuestForm(open, onSave, onClose) {
     checkIn, setCheckIn,
     checkOut, setCheckOut,
     note, setNote,
+    formError, setFormError,
     handleSubmit,
     loading,
-    formError,
   };
 }
