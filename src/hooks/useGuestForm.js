@@ -75,6 +75,7 @@ const resetForm = async () => {
       });
 
       setLoading(false);
+      resetForm();
       onSave(); // refresh guest list
       onClose(); // close modal
     } catch (err) {
