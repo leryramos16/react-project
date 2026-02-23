@@ -14,6 +14,7 @@ import NavBar from "../components/NavBar.jsx";
 import SearchAppBar from "../components/SearchAppBar.jsx";
 import GuestForm from "../components/GuestForm.jsx";
 import GuestCard from "../components/GuestCard.jsx";
+import AlertSnackbar from "../components/AlertSnackbar.jsx";
 import api from "../api/api.js";
 
 export default function Guests() {
@@ -21,6 +22,11 @@ export default function Guests() {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   
+  const [alert, setAlert] = useState({
+    open: false,
+    message: "",
+    severity: "success", // success, error, info, warning
+  });
 
   const handleOpen = () => {
     setOpen(true);
@@ -50,6 +56,12 @@ export default function Guests() {
   // Refresh after saving guest
   const handleSave = async () => {
     await fetchGuests();
+
+    setAlert({
+      open: true,
+      message: "Guest saved successfully!",
+      severity: "success",
+    });
   };
 
   return (
@@ -59,7 +71,12 @@ export default function Guests() {
       </Box>
 
       <NavBar />
-
+      <AlertSnackbar
+        open={alert.open}
+        message={alert.message}
+        severity={alert.severity}
+        onClose={() => setAlert({ ...alert, open: false })}
+      />
       <Container>
         {/* Header */}
         <Stack direction="row" justifyContent="space-between" mb={2}>
