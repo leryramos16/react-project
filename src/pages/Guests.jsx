@@ -20,6 +20,11 @@ export default function Guests() {
   const [guests, setGuests] = useState([]);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
 
   // Fetch guests from backend
   const fetchGuests = useCallback(async () => {
@@ -62,7 +67,7 @@ export default function Guests() {
           <Button
             variant="contained"
             startIcon={<AddIcon />}
-            onClick={() => setOpen(true)}
+            onClick={handleOpen}
           >
             Add Guest
           </Button>

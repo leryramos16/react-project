@@ -11,7 +11,14 @@ export function useGuestForm(open, onSave, onClose) {
   const [formError, setFormError] = useState("");
   const [loading, setLoading] = useState(false);
 
+  
+  
   // Fetch available rooms from backend
+
+
+  useEffect(() => {
+  if (!open) return;
+
   const fetchAvailableRooms = async () => {
     try {
       const res = await api.get("/rooms/available");
@@ -21,18 +28,19 @@ export function useGuestForm(open, onSave, onClose) {
     }
   };
 
-  // Reset form when modal opens
-  useEffect(() => {
-    if (open) {
-      setFullname("");
-      setRooms([]);
-      setCheckIn("");
-      setCheckOut("");
-      setNote("");
-      setFormError("");
-      fetchAvailableRooms();
-    }
-  }, [open]);
+  fetchAvailableRooms();
+}, [open]);
+
+const resetForm = async () => {
+  setFullname("");
+  setRooms([]);
+  setCheckIn("");
+  setCheckOut("");
+  setNote("");
+  setFormError("");
+};
+
+;
 
   
 
@@ -84,6 +92,7 @@ export function useGuestForm(open, onSave, onClose) {
     note, setNote,
     formError, setFormError,
     handleSubmit,
+    resetForm,
     loading,
   };
 }
