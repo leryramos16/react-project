@@ -71,7 +71,7 @@ function SearchAppBar({ search, setSearch }) {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search guest name…"
+              placeholder="Search guest..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               inputProps={{ 'aria-label': 'search' }}

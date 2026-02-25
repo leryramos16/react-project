@@ -54,7 +54,7 @@ import HistoryIcon from "@mui/icons-material/History";
           icon={<PeopleIcon />}
         />
         <BottomNavigationAction
-        label="Meals"
+        label="Fullboard for Today"
         icon={<RestaurantIcon />}
         />
 

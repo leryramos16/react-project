@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Guests from "./pages/Guests";
-
+import Meals from './pages/Meals';
 
 
 
@@ -10,7 +10,7 @@ function App() {
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Guests/>} />
-      
+      <Route path="/meals" element={<Meals/>} />
       
       
     </Routes>
