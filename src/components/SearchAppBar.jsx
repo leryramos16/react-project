@@ -52,7 +52,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-function SearchAppBar() {
+function SearchAppBar({ search, setSearch }) {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -71,7 +71,9 @@ function SearchAppBar() {
               <SearchIcon />
             </SearchIconWrapper>
             <StyledInputBase
-              placeholder="Search…"
+              placeholder="Search guest name…"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
               inputProps={{ 'aria-label': 'search' }}
             />
           </Search>

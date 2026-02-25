@@ -13,9 +13,7 @@ export function useGuestForm(open, onSave, onClose) {
 
   
   
-  // Fetch available rooms from backend
-
-
+  // Fetch available rooms from backend when opening modal
   useEffect(() => {
   if (!open) return;
 

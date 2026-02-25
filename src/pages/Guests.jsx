@@ -20,8 +20,14 @@ import api from "../api/api.js";
 export default function Guests() {
   const [guests, setGuests] = useState([]);
   const [open, setOpen] = useState(false);
+  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
   
+  // Filter guests based on search
+  const filteredGuests = guests.filter((guest) =>
+    guest.fullname.toLowerCase().includes(search.toLowerCase())
+  );
+
   const [alert, setAlert] = useState({
     open: false,
     message: "",
@@ -67,7 +73,10 @@ export default function Guests() {
   return (
     <>
       <Box mb={1}>
-        <SearchAppBar />
+        <SearchAppBar
+          search={search}
+          setSearch={setSearch}
+        />
       </Box>
 
       <NavBar />
@@ -97,8 +106,8 @@ export default function Guests() {
           </Stack>
         ) : (
           <Stack spacing={2}>
-            {guests.length > 0 ? (
-              guests.map((guest) => (
+            {filteredGuests.length > 0 ? (
+              filteredGuests.map((guest) => (
                 <GuestCard key={guest.id} guest={guest} />
               ))
             ) : (
