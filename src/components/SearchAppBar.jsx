@@ -16,8 +16,8 @@ const Search = styled('div')(({ theme }) => ({
   '&:hover': {
     backgroundColor: alpha(theme.palette.common.white, 0.25),
   },
-  marginLeft: 100,
-  width: '60%', //  mobile width
+  width: '100%',
+  maxWidth: 300,
   [theme.breakpoints.up('sm')]: {
     marginLeft: theme.spacing(1),
     width: '250px', //  fixed width for tablet+
@@ -56,13 +56,12 @@ function SearchAppBar({ search, setSearch }) {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
-        <Toolbar>
+        <Toolbar sx={{ display: "flex", justifyContent: "space-between" }}>
           
           <Typography
             variant="h6"
             noWrap
             component="div"
-            sx={{ flexGrow: 1 }}
           >
             CLUBJ
           </Typography>

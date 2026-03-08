@@ -37,13 +37,17 @@ import HistoryIcon from "@mui/icons-material/History";
         position: "fixed",
         bottom: 0,
         left: 0,
-        right: 0
+        right: 0,
+        zIndex: 1200,
       }}
-      elevation={3}
+      elevation={8}
     >
       <BottomNavigation
         showLabels
         value={value}
+        sx={{
+          width: "100%",
+        }}
         onChange={(event, newValue) => {
           setValue(newValue);
           navigate(routes[newValue]);
