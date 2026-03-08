@@ -13,6 +13,7 @@ import {
   OutlinedInput,
   Chip,
   Alert,
+  Autocomplete,
 } from "@mui/material";
 import { useGuestForm } from "../hooks/useGuestForm";
 
@@ -52,37 +53,40 @@ function GuestForm({ open, onClose, onSave }) {
             autoComplete="off"
           />
 
-          <FormControl fullWidth>
-            <InputLabel>Rooms</InputLabel>
-            <Select
-              multiple
-              value={rooms}
-              onChange={(e) => {
-              setRooms(e.target.value);
+          <Autocomplete
+            multiple
+            options={roomOptions}
+            getOptionLabel={(option) => option.name}
+            value={roomOptions.filter(room => rooms.includes(room.id))}
+            onChange={(event, newValue) => {
+              setRooms(newValue.map(room => room.id));
               if (formError) setFormError("");
             }}
-              input={<OutlinedInput label="Rooms" />}
-              renderValue={(selected) => (
-                <Stack direction="row" spacing={1} flexWrap="wrap">
-                  {selected.map((roomId) => {
-                    const room = roomOptions.find(r => r.id === roomId);
-                    return <Chip key={roomId} label={room?.name} />;
-                  })}
-                </Stack>
-              )}
-            >
-              {roomOptions.map((room) => (
-                <MenuItem
-                  key={room.id}
-                  value={room.id}
-                  disabled={!room.available}
-                >
-                  {room.name}
-                  {!room.available && " (Occupied)"}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+            getOptionDisabled={(option) => !option.available}
+
+            renderOption={(props, option) => (
+              <li {...props}>
+                {option.name}
+                {!option.available && " (Occupied)"}
+              </li>
+            )}
+
+            renderTags={(value, getTagProps) =>
+              value.map((option, index) => (
+                <Chip
+                  label={option.name}
+                  {...getTagProps({ index })}
+                />
+              ))
+            }
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Rooms"
+                placeholder="Select rooms"
+              />
+            )}
+          />
 
           <TextField
             label="Check-in Date"
