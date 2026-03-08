@@ -6,6 +6,7 @@ import {
   Stack,
   Box,
   CircularProgress,
+  Fade,
 } from "@mui/material";
 
 import AddIcon from "@mui/icons-material/Add";
@@ -22,7 +23,35 @@ export default function Guests() {
   const [open, setOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
+  const [showBottomNav, setShowBottomNav] = useState(true);
   
+  // for scrolling
+ useEffect(() => {
+  let lastScroll = window.scrollY;
+  const threshold = 10; // minimum scroll to trigger navbar change
+
+  const handleScroll = () => {
+    const currentScroll = window.scrollY;
+
+    // Ignore small scrolls
+    if (Math.abs(currentScroll - lastScroll) < threshold) return;
+
+    if (currentScroll > lastScroll) {
+      // Scrolling down → hide navbar
+      setShowBottomNav(false);
+    } else {
+      // Scrolling up → show navbar
+      setShowBottomNav(true);
+    }
+
+    lastScroll = currentScroll;
+  };
+
+  window.addEventListener("scroll", handleScroll);
+
+  return () => window.removeEventListener("scroll", handleScroll);
+}, []);
+
   // Filter guests based on search
   const filteredGuests = guests.filter((guest) =>
     guest.fullname.toLowerCase().includes(search.toLowerCase())
@@ -79,7 +108,19 @@ export default function Guests() {
         />
       </Box>
 
-      <NavBar />
+      <Fade direction="down" in={showBottomNav}>
+        <Box
+          sx={{
+            position: "fixed",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            zIndex: 1000, // above other content
+          }}
+        >
+          <NavBar />
+        </Box>
+      </Fade>
       <AlertSnackbar
         open={alert.open}
         message={alert.message}
