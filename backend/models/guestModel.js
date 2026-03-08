@@ -30,6 +30,7 @@ export const fetchAllGuests = async () => {
         FROM guests g
         LEFT JOIN guest_rooms gr ON g.id = gr.guest_id
         LEFT JOIN rooms r ON gr.room_id = r.id
+        WHERE g.check_out >= CURRENT_DATE
         GROUP BY g.id
         ORDER BY g.created_at DESC
         `);
