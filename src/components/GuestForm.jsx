@@ -14,8 +14,14 @@ import {
   Chip,
   Alert,
   Autocomplete,
+  Grow,
 } from "@mui/material";
+import { forwardRef } from "react";
 import { useGuestForm } from "../hooks/useGuestForm";
+
+const Transition = forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 function GuestForm({ open, onClose, onSave }) {
   const {
@@ -33,7 +39,18 @@ function GuestForm({ open, onClose, onSave }) {
   const today = new Date().toISOString().split("T")[0];
 
   return (
-    <Dialog open={open} onClose={onClose} fullWidth>
+    <Dialog
+        open={open}
+        onClose={onClose}
+        fullWidth
+        slots={{ transition: Grow }}
+        slotProps={{
+          transition: {
+            timeout: 500, // duration in ms
+            easing: "ease-in-out",
+          },
+        }}
+      >
       <DialogTitle>Add Guest</DialogTitle>
 
       <DialogContent>
