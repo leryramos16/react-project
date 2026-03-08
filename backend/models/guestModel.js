@@ -1,8 +1,24 @@
 import pool from "../db.js";
 
+// alisin pag lampas na sa check in date
+export const autoCheckoutGuests = async () => {
+    await pool.query(`
+        DELETE FROM guest_rooms
+        WHERE guest_id IN (
+            SELECT id
+            FROM guests
+            WHERE check_out < CURRENT_DATE
+            )
+            `);
+}
+
 
 // Fetch all guests
 export const fetchAllGuests = async () => {
+
+    // auto remove pag lampas na ang checkin date
+    await autoCheckoutGuests();
+
     const result = await pool.query(`
         SELECT
             g.id,
