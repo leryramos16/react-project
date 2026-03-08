@@ -30,6 +30,8 @@ function GuestForm({ open, onClose, onSave }) {
     loading,
   } = useGuestForm(open, onSave, onClose);
 
+  const today = new Date().toISOString().split("T")[0];
+
   return (
     <Dialog open={open} onClose={onClose} fullWidth>
       <DialogTitle>Add Guest</DialogTitle>
@@ -97,6 +99,11 @@ function GuestForm({ open, onClose, onSave }) {
               if (formError) setFormError("");
             }}
             InputLabelProps={{ shrink: true }}
+            slotProps={{
+              htmlInput: {
+                min: today,
+              },
+            }}
             fullWidth
           />
 
@@ -109,6 +116,11 @@ function GuestForm({ open, onClose, onSave }) {
               if (formError) setFormError("");
             }}
             InputLabelProps={{ shrink: true }}
+            slotProps={{
+              htmlInput: {
+                min: checkIn || today,
+              },
+            }}
             fullWidth
           />
 
